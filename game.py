@@ -3,6 +3,7 @@ from user import User
 from projectil import Projectil
 pygame.init()
 
+
 GREEN = (128,128,128)
 
 SCREENWIDTH=1000
@@ -26,9 +27,9 @@ def move():
     if keys[pygame.K_LEFT]:
        playerUser.updateDirectionLeft() 
     if keys[pygame.K_SPACE]:
-       p = Projectil(playerUser.getDirection())
-       projectils.append(p)
-       print(p)
+       if playerUser.canShot():
+           p = Projectil(playerUser)
+           projectils.append(p)
 
 
 def stillOnMap(x, y):
@@ -41,7 +42,6 @@ objects = []
 objects.append(playerUser)
 
 projectils = []
-#Allowing the user to close the window...
 carryOn = True
 clock=pygame.time.Clock()
 
@@ -50,22 +50,18 @@ while carryOn:
         if event.type==pygame.QUIT:
             carryOn=False
     move()
-    screen.fill(GREEN)
     events = pygame.event.get()
 
+    screen.fill(GREEN)
     for o in objects: 
-        screen.blit(o.image, o.pos) 
+        screen.blit(o.image, o.rect) 
     
     for p in projectils:
         p.update()
-        if not stillOnMap(p.pos.x, p.pos.y):
+        if not stillOnMap(p.rect.x, p.rect.y):
             projectils.remove(p)
         else:
-            screen.blit(p.image, p.pos)
-        
-
-
-    #Now let's draw all the sprites in one go. (For now we only have 1 sprite!)
+            screen.blit(p.image, p.rect)
 
     #Refresh Screen
     pygame.display.flip()
