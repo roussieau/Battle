@@ -1,13 +1,8 @@
 import pygame, random
 from user import User 
 from projectil import Projectil
+from settings import SCREENWIDTH, SCREENHEIGHT, GREY
 pygame.init()
-
-
-GREEN = (128,128,128)
-
-SCREENWIDTH=1000
-SCREENHEIGHT=1000
 
 size = (SCREENWIDTH, SCREENHEIGHT)
 screen = pygame.display.set_mode(size)
@@ -26,10 +21,12 @@ def move():
        playerUser.moveDown() 
     if keys[pygame.K_LEFT]:
        playerUser.updateDirectionLeft() 
+    if keys[pygame.K_RIGHT]:
+       playerUser.updateDirectionRight() 
     if keys[pygame.K_SPACE]:
        if playerUser.canShot():
            p = Projectil(playerUser)
-           projectils.append(p)
+           projectils.add(p)
 
 
 def stillOnMap(x, y):
@@ -38,10 +35,10 @@ def stillOnMap(x, y):
 
 
 playerUser = User()
-objects = []
-objects.append(playerUser)
+objects = pygame.sprite.Group()
+objects.add(playerUser)
 
-projectils = []
+projectils = pygame.sprite.Group()
 carryOn = True
 clock=pygame.time.Clock()
 
@@ -52,7 +49,7 @@ while carryOn:
     move()
     events = pygame.event.get()
 
-    screen.fill(GREEN)
+    screen.fill(GREY)
     for o in objects: 
         screen.blit(o.image, o.rect) 
     
@@ -62,6 +59,11 @@ while carryOn:
             projectils.remove(p)
         else:
             screen.blit(p.image, p.rect)
+
+    blocks_hit_list = pygame.sprite.spritecollide(playerUser, projectils, True)
+    if len(blocks_hit_list) != 0:
+        print(blocks_hit_list)
+        print('boom')
 
     #Refresh Screen
     pygame.display.flip()

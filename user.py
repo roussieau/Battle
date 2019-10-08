@@ -1,32 +1,49 @@
 import pygame
+import random
 from datetime import datetime, timedelta
+from settings import *
 
-POS = [-2, -1, 0 , 1, 2, 1 , 0, -1]    
-INTERVAL_BETWEEN_SHOT = timedelta(seconds=1) 
+POS = [-2, -1, 0, 1, 2, 1, 0, -1]    
 
 class User(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self, x=randX(), y=randY()):
         super().__init__()
         img = pygame.image.load(r'res/adrien.png')
-        self.image = pygame.transform.scale(img, (80,80))
-        self.rect = self.image.get_rect()
+        self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
+    self.rect = self.image.get_rect()
+        #Random spawn
+        self.rect.x = x 
+        self.rect.y = y
         self.directionX = 2
         self.directionY = 0 
         self.lastShot = datetime.now() 
         
-        
+    # Movements     
     def moveUp(self):
-        self.rect.y -= 3 if self.rect.y-3 >= 0 else 0
+        if self.rect.y - USER_SPEED >= 0:
+            self.rect.y -= USER_SPEED 
+        else:
+            self.rect.y = 0
 
     def moveDown(self):
-        self.rect.y += 3 if self.rect.y+3 < 900 else 0
+        if self.rect.y + USER_SPEED < MAP_HEIGHT_LIMIT: 
+            self.rect.y += USER_SPEED
+        else: 
+            self.rect.y = 0
 
     def moveLeft(self):
-        self.rect.x -= 3 if self.rect.x-3 >= 0 else 0  
+        if self.rect.x - USER_SPEED >= 0:
+            self.rect.x -= USER_SPEED
+        else:
+            self.rect.x = 0  
 
     def moveRight(self):
-        self.rect.x += 3 if self.rect.x+3 < 900 else 0
+        if self.rect.x + USER_SPEED < MAP_WIDTH_LIMIT:
+            self.rect.x += USER_SPEED
+        else:
+            self.rect.x = 0
+
 
     def getDirection(self):
         return {
@@ -37,6 +54,10 @@ class User(pygame.sprite.Sprite):
     def updateDirectionLeft(self):
         self.directionX = (self.directionX + 1) % 8
         self.directionY = (self.directionY + 1) % 8
+
+    def updateDirectionRight(self):
+        self.directionX = (self.directionX - 1) % 8
+        self.directionY = (self.directionY - 1) % 8
         
     def canShot(self):
         canShot = datetime.now() - self.lastShot > INTERVAL_BETWEEN_SHOT
@@ -45,9 +66,15 @@ class User(pygame.sprite.Sprite):
         return canShot
         
     def getX(self):
-        x = self.rect.x
+        x = self.rect.centerx
         return x 
 
     def getY(self):
-        y = self.rect.y
+        y = self.rect.centery
         return y 
+
+def randX():
+    return random.randrange(0, MAP_WIDTH_LIMIT)
+
+def randY():
+    return random.randrange(0, MAP_WIDTH_LIMIT) 
