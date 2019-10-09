@@ -5,13 +5,19 @@ from settings import *
 
 POS = [-2, -1, 0, 1, 2, 1, 0, -1]    
 
+def randX():
+    return random.randrange(0, MAP_WIDTH_LIMIT)
+
+def randY():
+    return random.randrange(0, MAP_HEIGHT_LIMIT) 
+
 class User(pygame.sprite.Sprite):
 
     def __init__(self, x=randX(), y=randY()):
         super().__init__()
         img = pygame.image.load(r'res/adrien.png')
         self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
-    self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
         #Random spawn
         self.rect.x = x 
         self.rect.y = y
@@ -73,8 +79,4 @@ class User(pygame.sprite.Sprite):
         y = self.rect.centery
         return y 
 
-def randX():
-    return random.randrange(0, MAP_WIDTH_LIMIT)
 
-def randY():
-    return random.randrange(0, MAP_WIDTH_LIMIT) 

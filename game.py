@@ -1,7 +1,7 @@
 import pygame, random
 from user import User 
 from projectil import Projectil
-from settings import SCREENWIDTH, SCREENHEIGHT, GREY
+from settings import * 
 pygame.init()
 
 size = (SCREENWIDTH, SCREENHEIGHT)
@@ -12,21 +12,39 @@ pygame.display.set_caption("The battle of CI")
 def move():
     keys = pygame.key.get_pressed() 
     if keys[pygame.K_q]:
-       playerUser.moveLeft() 
+        playerUser.moveLeft() 
     if keys[pygame.K_d]:
-       playerUser.moveRight() 
+        playerUser.moveRight() 
     if keys[pygame.K_z]:
-       playerUser.moveUp() 
+        playerUser.moveUp() 
     if keys[pygame.K_s]:
-       playerUser.moveDown() 
+        playerUser.moveDown() 
     if keys[pygame.K_LEFT]:
-       playerUser.updateDirectionLeft() 
+        playerUser.updateDirectionLeft() 
     if keys[pygame.K_RIGHT]:
-       playerUser.updateDirectionRight() 
+        playerUser.updateDirectionRight() 
     if keys[pygame.K_SPACE]:
-       if playerUser.canShot():
-           p = Projectil(playerUser)
-           projectils.add(p)
+        shot(keys)
+
+def shot(keys):
+    if not playerUser.canShot():
+        return
+    if keys[pygame.K_UP] and keys[pygame.K_RIGHT]:
+        projectils.add(Projectil(NORTH_EAST, playerUser))  
+    elif keys[pygame.K_DOWN] and keys[pygame.K_RIGHT]:
+        projectils.add(Projectil(SOUTH_EAST, playerUser))  
+    elif keys[pygame.K_DOWN] and keys[pygame.K_LEFT]:
+        projectils.add(Projectil(SOUTH_WEST, playerUser))  
+    elif keys[pygame.K_UP] and keys[pygame.K_LEFT]:
+        projectils.add(Projectil(NORTH_WEST, playerUser))  
+    elif keys[pygame.K_UP]:
+        projectils.add(Projectil(NORTH, playerUser))  
+    elif keys[pygame.K_RIGHT]:
+        projectils.add(Projectil(EAST, playerUser))  
+    elif keys[pygame.K_DOWN]:
+        projectils.add(Projectil(SOUTH, playerUser))  
+    elif keys[pygame.K_LEFT]:
+        projectils.add(Projectil(WEST, playerUser))  
 
 
 def stillOnMap(x, y):
