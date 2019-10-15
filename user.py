@@ -2,6 +2,7 @@ import pygame
 import random
 from datetime import datetime, timedelta
 from settings import *
+from network import Network
 
 POS = [-2, -1, 0, 1, 2, 1, 0, -1]    
 
@@ -18,12 +19,14 @@ class User(pygame.sprite.Sprite):
         img = pygame.image.load(r'res/adrien.png')
         self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
         self.rect = self.image.get_rect()
+        self.id = id
         #Random spawn
         self.rect.x = x 
         self.rect.y = y
         self.directionX = 2
         self.directionY = 0 
         self.lastShot = datetime.now() 
+        self.net = Network()
         
     # Movements     
     def moveUp(self):
@@ -31,24 +34,28 @@ class User(pygame.sprite.Sprite):
             self.rect.y -= USER_SPEED 
         else:
             self.rect.y = 0
+        self.sendPosition()
 
     def moveDown(self):
         if self.rect.y + USER_SPEED < MAP_HEIGHT_LIMIT: 
             self.rect.y += USER_SPEED
         else: 
             self.rect.y = 0
+        self.sendPosition()
 
     def moveLeft(self):
         if self.rect.x - USER_SPEED >= 0:
             self.rect.x -= USER_SPEED
         else:
             self.rect.x = 0  
+        self.sendPosition()
 
     def moveRight(self):
         if self.rect.x + USER_SPEED < MAP_WIDTH_LIMIT:
             self.rect.x += USER_SPEED
         else:
             self.rect.x = 0
+        self.sendPosition()
 
 
     def getDirection(self):
@@ -64,7 +71,7 @@ class User(pygame.sprite.Sprite):
     def updateDirectionRight(self):
         self.directionX = (self.directionX - 1) % 8
         self.directionY = (self.directionY - 1) % 8
-        
+       
     def canShot(self):
         canShot = datetime.now() - self.lastShot > INTERVAL_BETWEEN_SHOT
         if canShot:
@@ -78,5 +85,9 @@ class User(pygame.sprite.Sprite):
     def getY(self):
         y = self.rect.centery
         return y 
+
+    def sendPosition(self):
+       data = "u:" + str(self.rect.centerx) + ":" + str(self.rect.centery) + "\n"
+       self.net.send(data)
 
 
