@@ -12,9 +12,22 @@ def randX():
 def randY():
     return random.randrange(0, MAP_HEIGHT_LIMIT) 
 
+class DrawUser(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__() 
+        img = pygame.image.load(r'res/adrien.png')
+        self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x 
+        self.rect.centery = y
+
+    def setPosition(self, x, y):
+        self.rect.centerx = x
+        self.rect.centery = y
+
 class User(pygame.sprite.Sprite):
 
-    def __init__(self, x=randX(), y=randY()):
+    def __init__(self, net, x=randX(), y=randY()):
         super().__init__()
         img = pygame.image.load(r'res/adrien.png')
         self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
@@ -26,8 +39,7 @@ class User(pygame.sprite.Sprite):
         self.directionX = 2
         self.directionY = 0 
         self.lastShot = datetime.now() 
-        self.net = Network()
-        
+        self.net = net        
     # Movements     
     def moveUp(self):
         if self.rect.y - USER_SPEED >= 0:
@@ -87,7 +99,7 @@ class User(pygame.sprite.Sprite):
         return y 
 
     def sendPosition(self):
-       data = "u:" + str(self.rect.centerx) + ":" + str(self.rect.centery) + "\n"
+       data = str(self.rect.centerx) + ":" + str(self.rect.centery) + "\n"
        self.net.send(data)
 
 

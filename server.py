@@ -16,10 +16,16 @@ class Client:
     def __init__(self, conn, id):
         self.conn = conn
         self.id = id
-        conn.sendall(str.encode("c:" + str(id)))
+        conn.sendall(str.encode(str(id)))
 
     def send(self, data):
         self.conn.sendall(str.encode(data))
+
+def broadcast(data, id):
+    """Broadast data to all hosts"""
+    for h in hostsClient:
+        if h.id != id:
+            h.send(data)
 
 try:
     s.bind((server, port))
@@ -30,7 +36,6 @@ except socket.error as e:
 s.listen(4)
 print("Waiting for a connection")
 
-pos = ["0:50,50", "1:100,100"]
 def threaded_client(conn):
     while True:
         try:
@@ -41,15 +46,9 @@ def threaded_client(conn):
                 print("no data")
                 break
             else:
-                print("Recieved: " + reply)
-                #arr = reply.split(":")
-                #id = int(arr[0])
-                #pos[id] = reply
-
-                #if id == 0: nid = 1
-                #if id == 1: nid = 0
-
-                #reply = pos[nid][:]
+                arr = reply.split(":")
+                id = int(arr[0])
+                broadcast(reply, id)
 
         except Exception as e:
             print("exception: " + str(e))

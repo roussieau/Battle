@@ -11,7 +11,6 @@ class Network:
         self.port = 5555
         self.addr = (self.host, self.port)
         self.id = self.connect()
-        print(self.id)
 
     def connect(self):
         self.client.connect(self.addr)
@@ -23,6 +22,8 @@ class Network:
         :return: str
         """
         try:
-            self.client.send(str(self.id) + ":" + str.encode(data))
+            msg = self.id + ":" + data
+            self.client.sendall(str.encode(msg))
         except socket.error as e:
+            print("error in network file")
             return str(e)

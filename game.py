@@ -1,7 +1,10 @@
 import pygame, random
-from user import User 
+from user import User, DrawUser
 from projectil import Projectil
 from settings import * 
+from network import Network
+from _thread import *
+
 pygame.init()
 
 size = (SCREENWIDTH, SCREENHEIGHT)
@@ -50,9 +53,43 @@ def shot(keys):
 def stillOnMap(x, y):
     return x >= 0 and x < SCREENWIDTH and y >= 0 and y < SCREENHEIGHT
 
+def addPlayer(id, x, y):
+    if users[id] == None:
+        users[id] = DrawUser(x, y)
+        objects.add(users[id])
+    else: 
+        users[id].setPosition(x, y)
+
+def threaded_client(conn):
+    while True:
+        try:
+            data = conn.recv(2048)
+            reply = data.decode('utf-8')
+            if not data:
+                print("no data")
+                break
+            else:
+                arr = reply.split(":")
+                id = int(arr[0])
+                if len(arr) == 3:
+                    addPlayer(id, int(arr[1]), int(arr[2]))
+
+        except Exception as e:
+            print("exception: " + str(e))
+            break
+
+    print("Connection Closed")
+    conn.close()
 
 
-playerUser = User()
+
+
+net = Network()
+start_new_thread(threaded_client, (net.client,))
+
+users = [None] * 10
+
+playerUser = User(net)
 objects = pygame.sprite.Group()
 objects.add(playerUser)
 
