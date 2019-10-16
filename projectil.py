@@ -20,6 +20,10 @@ class Projectil(pygame.sprite.Sprite):
             self.rect.centery = user.getY() + 65 
         else:
             self.rect.centery = user.getY()
+
+        if user.net != None:
+            data = "p:{}:{}:{}".format(direction, user.getX(), user.getY())
+            user.net.send(data)
         
         
     def update(self):

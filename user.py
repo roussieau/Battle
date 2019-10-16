@@ -20,10 +20,20 @@ class DrawUser(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.centerx = x 
         self.rect.centery = y
+        self.net = None
 
     def setPosition(self, x, y):
         self.rect.centerx = x
         self.rect.centery = y
+
+    def getX(self):
+        x = self.rect.centerx
+        return x 
+
+    def getY(self):
+        y = self.rect.centery
+        return y 
+
 
 class User(pygame.sprite.Sprite):
 

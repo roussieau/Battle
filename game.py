@@ -71,8 +71,11 @@ def threaded_client(conn):
             else:
                 arr = reply.split(":")
                 id = int(arr[0])
-                if len(arr) == 3:
-                    addPlayer(id, int(arr[1]), int(arr[2]))
+                if len(arr) > 1:
+                    if arr[1] == 'p':
+                        projectils.add(Projectil(int(arr[2]), users[id]))  
+                    else:
+                        addPlayer(id, int(arr[1]), int(arr[2]))
 
         except Exception as e:
             print("exception: " + str(e))
