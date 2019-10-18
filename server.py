@@ -7,7 +7,7 @@ hostsClient = []
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-server = 'localhost'
+server = '0.0.0.0'
 port = 5555
 
 server_ip = socket.gethostbyname(server)
@@ -40,6 +40,7 @@ def threaded_client(conn):
     while True:
         try:
             data = conn.recv(2048)
+            print("data : " + str(data))
             reply = data.decode('utf-8')
             if not data:
                 conn.send(str.encode("Goodbye"))

@@ -16,7 +16,7 @@ class DrawUser(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__() 
         img = pygame.image.load(r'res/adrien.png')
-        self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
+        self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
         self.rect = self.image.get_rect()
         self.rect.centerx = x 
         self.rect.centery = y
@@ -40,7 +40,7 @@ class User(pygame.sprite.Sprite):
     def __init__(self, net, x=randX(), y=randY()):
         super().__init__()
         img = pygame.image.load(r'res/adrien.png')
-        self.image = pygame.transform.scale(img, (USER_HEIGHT, USER_HEIGHT))
+        self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
         self.rect = self.image.get_rect()
         self.id = id
         #Random spawn

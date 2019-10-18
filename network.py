@@ -5,9 +5,7 @@ class Network:
 
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.host = "localhost" # For this to work on your machine this must be equal to the ipv4 address of the machine running the server
-                                    # You can find this address by typing ipconfig in CMD and copying the ipv4 address. Again this must be the servers
-                                    # ipv4 address. This feild will be the same for all your clients.
+        self.host = "192.168.1.10"
         self.port = 5555
         self.addr = (self.host, self.port)
         self.id = self.connect()
@@ -25,5 +23,6 @@ class Network:
             msg = self.id + ":" + data
             self.client.sendall(str.encode(msg))
         except socket.error as e:
-            print("error in network file")
+            print("error in network file : ")
+            print(str(e))
             return str(e)

@@ -11,7 +11,6 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("The battle of CI")
 
-#This will be a list that will contain all the sprites we intend to use in our game.
 def move():
     keys = pygame.key.get_pressed() 
     if keys[pygame.K_q]:
@@ -50,8 +49,7 @@ def shot(keys):
         projectils.add(Projectil(WEST, playerUser))  
 
 
-def stillOnMap(x, y):
-    return x >= 0 and x < SCREENWIDTH and y >= 0 and y < SCREENHEIGHT
+
 
 def addPlayer(id, x, y):
     if users[id] == None:
@@ -79,7 +77,6 @@ def threaded_client(conn):
 
         except Exception as e:
             print("exception: " + str(e))
-            break
 
     print("Connection Closed")
     conn.close()
@@ -113,7 +110,7 @@ while carryOn:
     
     for p in projectils:
         p.update()
-        if not stillOnMap(p.rect.x, p.rect.y):
+        if not p.stillOnMap():
             projectils.remove(p)
         else:
             screen.blit(p.image, p.rect)
