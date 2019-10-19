@@ -2,7 +2,7 @@ import pygame
 from settings import *
 
 class Projectil(pygame.sprite.Sprite):
-    def __init__(self, direction, user):
+    def __init__(self, direction, user, net=None):
         super().__init__()
         img = pygame.image.load(r'res/stella.png')
         self.image = pygame.transform.scale(img, (40,50))
@@ -21,9 +21,9 @@ class Projectil(pygame.sprite.Sprite):
         else:
             self.rect.centery = user.getY()
 
-        if user.net != None:
+        if net != None:
             data = "p:{}:{}:{}".format(direction, user.getX(), user.getY())
-            user.net.send(data)
+            net.send(data)
         
         
     def update(self):

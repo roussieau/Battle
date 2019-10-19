@@ -4,6 +4,7 @@ from projectil import Projectil
 from settings import * 
 from network import Network
 from _thread import *
+import time
 
 pygame.init()
 
@@ -32,21 +33,21 @@ def shot(keys):
     if not playerUser.canShot():
         return
     if keys[pygame.K_UP] and keys[pygame.K_RIGHT]:
-        projectils.add(Projectil(NORTH_EAST, playerUser))  
+        projectils.add(Projectil(NORTH_EAST, playerUser, net))  
     elif keys[pygame.K_DOWN] and keys[pygame.K_RIGHT]:
-        projectils.add(Projectil(SOUTH_EAST, playerUser))  
+        projectils.add(Projectil(SOUTH_EAST, playerUser, net))  
     elif keys[pygame.K_DOWN] and keys[pygame.K_LEFT]:
-        projectils.add(Projectil(SOUTH_WEST, playerUser))  
+        projectils.add(Projectil(SOUTH_WEST, playerUser, net))  
     elif keys[pygame.K_UP] and keys[pygame.K_LEFT]:
-        projectils.add(Projectil(NORTH_WEST, playerUser))  
+        projectils.add(Projectil(NORTH_WEST, playerUser, net))  
     elif keys[pygame.K_UP]:
-        projectils.add(Projectil(NORTH, playerUser))  
+        projectils.add(Projectil(NORTH, playerUser, net))  
     elif keys[pygame.K_RIGHT]:
-        projectils.add(Projectil(EAST, playerUser))  
+        projectils.add(Projectil(EAST, playerUser, net))  
     elif keys[pygame.K_DOWN]:
-        projectils.add(Projectil(SOUTH, playerUser))  
+        projectils.add(Projectil(SOUTH, playerUser, net))  
     elif keys[pygame.K_LEFT]:
-        projectils.add(Projectil(WEST, playerUser))  
+        projectils.add(Projectil(WEST, playerUser, net))  
 
 
 
@@ -58,38 +59,11 @@ def addPlayer(id, x, y):
     else: 
         users[id].setPosition(x, y)
 
-def threaded_client(conn):
-    while True:
-        try:
-            data = conn.recv(2048)
-            reply = data.decode('utf-8')
-            if not data:
-                print("no data")
-                break
-            else:
-                arr = reply.split(":")
-                id = int(arr[0])
-                if len(arr) > 1:
-                    if arr[1] == 'p':
-                        projectils.add(Projectil(int(arr[2]), users[id]))  
-                    else:
-                        addPlayer(id, int(arr[1]), int(arr[2]))
-
-        except Exception as e:
-            print("exception: " + str(e))
-
-    print("Connection Closed")
-    conn.close()
-
-
-
-
 net = Network()
-start_new_thread(threaded_client, (net.client,))
 
 users = [None] * 10
 
-playerUser = User(net)
+playerUser = User()
 objects = pygame.sprite.Group()
 objects.add(playerUser)
 
@@ -103,6 +77,20 @@ while carryOn:
             carryOn=False
     move()
     events = pygame.event.get()
+    
+    try:
+        reply = net.send(playerUser.position())
+        arr = reply.split(":")
+        id = int(arr[0])
+        if len(arr) > 1:
+            if arr[1] == 'p':
+                projectils.add(Projectil(int(arr[2]), users[id]))  
+            else:
+                addPlayer(id, int(arr[1]), int(arr[2]))
+
+    except Exception as e:
+        print("exception: " + str(e))
+
 
     screen.fill(GREY)
     for o in objects: 
@@ -121,11 +109,12 @@ while carryOn:
         print('boom')
 
 
+    time.sleep(0.025)
     #Refresh Screen
     pygame.display.flip()
 
     #Number of frames per secong e.g. 60
-    clock.tick(60)
+    clock.tick(30)
 
 pygame.quit()
 

@@ -44,7 +44,7 @@ def threaded_client(conn):
             reply = data.decode('utf-8')
             if not data:
                 conn.send(str.encode("Goodbye"))
-                print("no data")
+                conn.close()
                 break
             else:
                 arr = reply.split(":")
