@@ -3,12 +3,13 @@ import socket
 
 class Network:
 
-    def __init__(self):
+    def __init__(self, id):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = "192.168.1.25"
         self.port = 5555
         self.addr = (self.host, self.port)
-        self.id = self.connect()
+        self.connect()
+        self.id = id
 
     def connect(self):
         self.client.connect(self.addr)
@@ -20,7 +21,7 @@ class Network:
         :return: str
         """
         try:
-            msg = self.id + ":" + data
+            msg = str(self.id) + ":" + data + ";"
             self.client.sendall(str.encode(msg))
             reply = self.client.recv(2048)
             return reply.decode("utf-8")

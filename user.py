@@ -3,6 +3,7 @@ import random
 from datetime import datetime, timedelta
 from settings import *
 from network import Network
+import sys
 
 POS = [-2, -1, 0, 1, 2, 1, 0, -1]    
 
@@ -13,14 +14,28 @@ def randY():
     return random.randrange(0, MAP_HEIGHT_LIMIT) 
 
 class DrawUser(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, id, x, y):
         super().__init__() 
-        img = pygame.image.load(r'res/adrien.png')
-        self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
+        self.id = int(id)
+        print(self.id)
+        self.drawUser()
         self.rect = self.image.get_rect()
         self.rect.centerx = x 
         self.rect.centery = y
-        self.net = None
+
+    def drawUser(self):
+        if self.id == 0:
+            img = pygame.image.load(r'res/adrien.png')
+            self.image =  pygame.transform.scale(img, (45, 80))
+        if self.id == 1:
+            img = pygame.image.load(r'res/gerard.png')
+            self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
+        if self.id == 2:
+            img = pygame.image.load(r'res/caro.png')
+            self.image = pygame.transform.scale(img, (65, 80))
+
+
+
 
     def setPosition(self, x, y):
         self.rect.centerx = x
@@ -37,18 +52,31 @@ class DrawUser(pygame.sprite.Sprite):
 
 class User(pygame.sprite.Sprite):
 
-    def __init__(self, x=randX(), y=randY()):
+    def __init__(self, id, x=randX(), y=randY()):
         super().__init__()
-        img = pygame.image.load(r'res/adrien.png')
-        self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
+        self.id = int(id)
+        self.drawUser()
         self.rect = self.image.get_rect()
-        self.id = id
         #Random spawn
         self.rect.x = x 
         self.rect.y = y
         self.directionX = 2
         self.directionY = 0 
         self.lastShot = datetime.now() 
+
+    def drawUser(self):
+        if self.id == 0:
+            img = pygame.image.load(r'res/adrien.png')
+            self.image =  pygame.transform.scale(img, (45, 80))
+        if self.id == 1:
+            img = pygame.image.load(r'res/gerard.png')
+            self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
+        if self.id == 2:
+            img = pygame.image.load(r'res/caro.png')
+            self.image = pygame.transform.scale(img, (65, 80))
+
+
+
     # Movements     
     def moveUp(self):
         if self.rect.y - USER_SPEED >= 0:
@@ -104,6 +132,6 @@ class User(pygame.sprite.Sprite):
         return y 
 
     def position(self):
-       return str(self.rect.centerx) + ":" + str(self.rect.centery) + "\n"
+       return str(self.rect.centerx) + ":" + str(self.rect.centery) 
 
 

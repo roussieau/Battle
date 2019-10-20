@@ -4,8 +4,8 @@ from settings import *
 class Projectil(pygame.sprite.Sprite):
     def __init__(self, direction, user, net=None):
         super().__init__()
-        img = pygame.image.load(r'res/stella.png')
-        self.image = pygame.transform.scale(img, (40,50))
+        img = pygame.image.load(r'res/letter.png')
+        self.image = pygame.transform.scale(img, (40,25))
         self.rect = self.image.get_rect()
         self.direction = direction
         if POS_X[direction] < 0:

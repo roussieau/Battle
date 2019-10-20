@@ -13,19 +13,18 @@ port = 5555
 server_ip = socket.gethostbyname(server)
 
 class Client: 
-    def __init__(self, conn, id):
+    def __init__(self, conn):
         self.conn = conn
-        self.id = id
-        conn.sendall(str.encode(str(id)))
 
     def send(self, data):
         self.conn.sendall(str.encode(data))
 
-def broadcast(data, id):
+def broadcast(data):
     """Broadast data to all hosts"""
+
+    print("data : " + str(data))
     for h in hostsClient:
-        if h.id != id:
-            h.send(data)
+        h.send(data)
 
 try:
     s.bind((server, port))
@@ -37,19 +36,17 @@ s.listen(4)
 print("Waiting for a connection")
 
 def threaded_client(conn):
+    conn.send(str.encode("Hello"))
     while True:
         try:
             data = conn.recv(2048)
-            print("data : " + str(data))
             reply = data.decode('utf-8')
             if not data:
                 conn.send(str.encode("Goodbye"))
                 conn.close()
                 break
             else:
-                arr = reply.split(":")
-                id = int(arr[0])
-                broadcast(reply, id)
+                broadcast(reply)
 
         except Exception as e:
             print("exception: " + str(e))
@@ -60,14 +57,7 @@ def threaded_client(conn):
 
 while True:
     conn, addr = s.accept()
-    if hosts.count(addr) == 0:
-        hosts.append(addr)
-        id = hosts.index(addr)
-        hostsClient.append(Client(conn, id))
-        conn.sendall(str.encode(str(id)))
-        
+    hostsClient.append(Client(conn))
     print("Connected to: ", addr)
 
     start_new_thread(threaded_client, (conn,))
-
-

@@ -5,12 +5,15 @@ from settings import *
 from network import Network
 from _thread import *
 import time
+import sys
 
 pygame.init()
 
 size = (SCREENWIDTH, SCREENHEIGHT)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("The battle of CI")
+
+MY_ID = int(sys.argv[1])
 
 def move():
     keys = pygame.key.get_pressed() 
@@ -54,22 +57,40 @@ def shot(keys):
 
 def addPlayer(id, x, y):
     if users[id] == None:
-        users[id] = DrawUser(x, y)
-        objects.add(users[id])
+        users[id] = DrawUser(id, x, y)
+        players.add(users[id])
     else: 
         users[id].setPosition(x, y)
 
-net = Network()
+def drawProjectils():
+    for p in projectils:
+        p.update()
+        if not p.stillOnMap():
+            projectils.remove(p)
+        else:
+            screen.blit(p.image, p.rect)
+
+def drawPlayers():
+    for p in players: 
+        screen.blit(p.image, p.rect) 
+
+def iAmDead():
+    blocks_hit_list = pygame.sprite.spritecollide(playerUser, projectils, True)
+    if len(blocks_hit_list) != 0:
+        print('boom')
+
+
+net = Network(MY_ID)
 
 users = [None] * 10
 
-playerUser = User()
-objects = pygame.sprite.Group()
-objects.add(playerUser)
+playerUser = User(MY_ID)
+players = pygame.sprite.Group()
+players.add(playerUser)
 
 projectils = pygame.sprite.Group()
 carryOn = True
-clock=pygame.time.Clock()
+clock = pygame.time.Clock()
 
 while carryOn:
     for event in pygame.event.get():
@@ -80,36 +101,26 @@ while carryOn:
     
     try:
         reply = net.send(playerUser.position())
-        arr = reply.split(":")
-        id = int(arr[0])
-        if len(arr) > 1:
-            if arr[1] == 'p':
-                projectils.add(Projectil(int(arr[2]), users[id]))  
-            else:
-                addPlayer(id, int(arr[1]), int(arr[2]))
+        for r in reply.split(";"):
+            arr = r.split(':')
+            if len(arr) > 2:
+                id = int(arr[0])
+                if id != MY_ID:
+                    if arr[1] == 'p':
+                        projectils.add(Projectil(int(arr[2]), users[id]))  
+                    else:
+                        addPlayer(id, int(arr[1]), int(arr[2]))
 
     except Exception as e:
         print("exception: " + str(e))
 
 
     screen.fill(GREY)
-    for o in objects: 
-        screen.blit(o.image, o.rect) 
-    
-    for p in projectils:
-        p.update()
-        if not p.stillOnMap():
-            projectils.remove(p)
-        else:
-            screen.blit(p.image, p.rect)
+   
+    drawPlayers()
+    drawProjectils()
+    iAmDead()
 
-    blocks_hit_list = pygame.sprite.spritecollide(playerUser, projectils, True)
-    if len(blocks_hit_list) != 0:
-        print(blocks_hit_list)
-        print('boom')
-
-
-    time.sleep(0.025)
     #Refresh Screen
     pygame.display.flip()
 
@@ -117,5 +128,3 @@ while carryOn:
     clock.tick(30)
 
 pygame.quit()
-
-
