@@ -129,7 +129,6 @@ while carryOn:
     
     try:
         reply = net.send(playerUser.position())
-        print(reply)
         for r in reply.split(";"):
             arr = r.split(':')
             if len(arr) > 1:
