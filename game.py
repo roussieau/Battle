@@ -93,11 +93,13 @@ def iAmDead():
     blocks_hit_list = pygame.sprite.spritecollide(playerUser, projectils, True)
     if len(blocks_hit_list) != 0:
         message_display("Take a shot and press enter !")
+        net.send('d')
         while True:
             event = pygame.event.poll()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     break
+        playerUser.respawn()
 
 
 net = Network(MY_ID)
@@ -126,10 +128,13 @@ while carryOn:
         reply = net.send(playerUser.position())
         for r in reply.split(";"):
             arr = r.split(':')
-            if len(arr) > 2:
+            if len(arr) > 1:
                 id = int(arr[0])
                 if id != MY_ID:
-                    if arr[1] == 'p':
+                    if arr[1] == 'd':
+                        players.remove(users[id])
+                        users[id] = None    
+                    elif arr[1] == 'p':
                         projectils.add(Projectil(int(arr[2]), users[id]))  
                     else:
                         addPlayer(id, int(arr[1]), int(arr[2]))

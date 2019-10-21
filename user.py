@@ -75,6 +75,10 @@ class User(pygame.sprite.Sprite):
             img = pygame.image.load(r'res/caro.png')
             self.image = pygame.transform.scale(img, (70, 80))
 
+    def respawn(self):
+        self.rect.x = randX()
+        self.rect.y = randY()
+
 
 
     # Movements     
