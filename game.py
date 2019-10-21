@@ -10,7 +10,7 @@ import sys
 pygame.init()
 
 size = (SCREENWIDTH, SCREENHEIGHT)
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
 pygame.display.set_caption("The battle of CI")
 
 red = (255,0,0)
@@ -33,6 +33,9 @@ def move():
         playerUser.updateDirectionRight() 
     if keys[pygame.K_SPACE]:
         shot(keys)
+    if keys[pygame.K_ESCAPE]:
+        carryOn = False
+        pygame.quit()
 
 def shot(keys):
     if not playerUser.canShot():
@@ -126,6 +129,7 @@ while carryOn:
     
     try:
         reply = net.send(playerUser.position())
+        print(reply)
         for r in reply.split(";"):
             arr = r.split(':')
             if len(arr) > 1:

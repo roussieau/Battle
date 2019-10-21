@@ -33,6 +33,9 @@ class DrawUser(pygame.sprite.Sprite):
         if self.id == 2:
             img = pygame.image.load(r'res/caro.png')
             self.image = pygame.transform.scale(img, (70, 80))
+        if self.id == 3:
+            img = pygame.image.load(r'res/julian.png')
+            self.image = pygame.transform.scale(img, (40, 80))
 
 
 
@@ -74,6 +77,10 @@ class User(pygame.sprite.Sprite):
         if self.id == 2:
             img = pygame.image.load(r'res/caro.png')
             self.image = pygame.transform.scale(img, (70, 80))
+        if self.id == 3:
+            img = pygame.image.load(r'res/julian.png')
+            self.image = pygame.transform.scale(img, (40, 80))
+
 
     def respawn(self):
         self.rect.x = randX()
