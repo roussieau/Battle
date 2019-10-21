@@ -13,6 +13,8 @@ size = (SCREENWIDTH, SCREENHEIGHT)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("The battle of CI")
 
+red = (255,0,0)
+
 MY_ID = int(sys.argv[1])
 
 def move():
@@ -74,10 +76,28 @@ def drawPlayers():
     for p in players: 
         screen.blit(p.image, p.rect) 
 
+def text_objects(text, font):
+    textSurface = font.render(text, True, red) 
+    return textSurface, textSurface.get_rect()
+
+def message_display(text):
+    largeText = pygame.font.Font('freesansbold.ttf',50)
+    TextSurf, TextRect = text_objects(text, largeText)
+    TextRect.center = ((SCREENWIDTH/2),(SCREENHEIGHT/2))
+    screen.blit(TextSurf, TextRect)
+
+    pygame.display.update()
+
+
 def iAmDead():
     blocks_hit_list = pygame.sprite.spritecollide(playerUser, projectils, True)
     if len(blocks_hit_list) != 0:
-        print('boom')
+        message_display("Take a shot and press enter !")
+        while True:
+            event = pygame.event.poll()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    break
 
 
 net = Network(MY_ID)
@@ -91,6 +111,9 @@ players.add(playerUser)
 projectils = pygame.sprite.Group()
 carryOn = True
 clock = pygame.time.Clock()
+
+
+bg = pygame.image.load(r'res/bg.png')
 
 while carryOn:
     for event in pygame.event.get():
@@ -115,8 +138,8 @@ while carryOn:
         print("exception: " + str(e))
 
 
-    screen.fill(GREY)
    
+    screen.blit(bg, [0, 0])
     drawPlayers()
     drawProjectils()
     iAmDead()
