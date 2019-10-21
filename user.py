@@ -32,7 +32,7 @@ class DrawUser(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
         if self.id == 2:
             img = pygame.image.load(r'res/caro.png')
-            self.image = pygame.transform.scale(img, (65, 80))
+            self.image = pygame.transform.scale(img, (70, 80))
 
 
 
@@ -73,7 +73,7 @@ class User(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(img, (USER_WIDTH, USER_HEIGHT))
         if self.id == 2:
             img = pygame.image.load(r'res/caro.png')
-            self.image = pygame.transform.scale(img, (65, 80))
+            self.image = pygame.transform.scale(img, (70, 80))
 
 
 

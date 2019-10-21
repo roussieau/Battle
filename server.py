@@ -22,7 +22,6 @@ class Client:
 def broadcast(data):
     """Broadast data to all hosts"""
 
-    print("data : " + str(data))
     for h in hostsClient:
         h.send(data)
 

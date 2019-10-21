@@ -4,20 +4,25 @@ from settings import *
 class Projectil(pygame.sprite.Sprite):
     def __init__(self, direction, user, net=None):
         super().__init__()
-        img = pygame.image.load(r'res/letter.png')
-        self.image = pygame.transform.scale(img, (40,25))
+        if user.id >= 2:
+            img = pygame.image.load(r'res/letter.png')
+            self.image = pygame.transform.scale(img, (40,25))
+        else: 
+            img = pygame.image.load(r'res/stella.png')
+            self.image = pygame.transform.scale(img, (25,40))
+
         self.rect = self.image.get_rect()
         self.direction = direction
         if POS_X[direction] < 0:
-            self.rect.centerx = user.getX() - USER_WIDTH * 0.6 - 25
+            self.rect.centerx = user.getX() - 80
         elif POS_X[direction] > 0: 
-            self.rect.centerx = user.getX() + USER_WIDTH * 0.6 + 25
+            self.rect.centerx = user.getX() + 80
         else: 
             self.rect.centerx = user.getX()
         if POS_Y[direction] < 0:
-            self.rect.centery = user.getY() - USER_HEIGHT * 0.6 - 25
+            self.rect.centery = user.getY() - 80
         elif POS_Y[direction] > 0:
-            self.rect.centery = user.getY() + USER_HEIGHT * 0.6 + 25
+            self.rect.centery = user.getY() + 80 
         else:
             self.rect.centery = user.getY()
 
